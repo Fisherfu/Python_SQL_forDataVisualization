@@ -9,9 +9,7 @@
   as
 
 
-  --[History_ChamberV5]
-  
-  ----[History_ChamberV4]
+
 
    SELECT 
         c.Current_id, 
