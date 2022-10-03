@@ -1,0 +1,90 @@
+
+
+
+
+
+
+  CREATE view [dbo].[Dev_schema_unpivot_time_Chamber]
+  as
+
+
+  --[History_ChamberV5]
+  
+  ----[History_ChamberV4]
+
+   SELECT 
+        c.Current_id, 
+		c.Pre_id, 
+		P.Hostname as pre_hostname, 
+		c.Hostname as current_hostname, 
+		c.date as Start_date,  
+        dateadd(dd, -1,  p.date) as END_date,     --P.date-1 AS PS_date
+		c.chamber
+FROM
+	(  
+		SELECT 
+			ROW_NUMBER() over (order by  Hostname,date) as Current_id,
+			ROW_NUMBER() over (order by  Hostname,date) - 1 as Pre_id,
+		   *
+			FROM ( 
+					 Select [Hostname],
+							cast([Date] as smalldatetime) as datetime,
+							cast([Date] as date) as date,
+							[Chamber] 
+
+							from
+							( Select [Hostname]	
+									  ,[7/25/2022]
+									  ,[8/9/2022]
+									  ,[8/18/2022]
+									  ,[8/25/2022]
+									  ,[9/5/2022]
+									  ,[9/19/2022]
+									from [TSMC_Machine_Util].[dbo].[History_ChamberV5]) p
+								UNPIVOT
+								([Chamber] For [Date] IN ( 
+								      
+									  [7/25/2022]
+									  ,[8/9/2022]
+									  ,[8/18/2022]
+									  ,[8/25/2022]
+									  ,[9/5/2022]
+									  ,[9/19/2022]
+									)
+								) as unpvt
+							)a
+	) P
+RIGHT OUTER JOIN
+	(   SELECT 
+			  ROW_NUMBER() over (order by  Hostname,date) as Current_id,
+			ROW_NUMBER() over (order by  Hostname,date) - 1 as Pre_id,
+        *
+    FROM (    Select [Hostname],
+							cast([Date] as smalldatetime) as datetime,
+							cast([Date] as date) as date,
+							[Chamber] 
+							from
+							( Select [Hostname]
+									  ,[7/25/2022]
+									  ,[8/9/2022]
+									  ,[8/18/2022]
+									  ,[8/25/2022]
+									  ,[9/5/2022]
+									  ,[9/19/2022]
+									from [TSMC_Machine_Util].[dbo].[History_ChamberV5]) p
+								UNPIVOT
+								([Chamber] For [Date] IN ( 
+									  
+									  [7/25/2022]
+									  ,[8/9/2022]
+									  ,[8/18/2022]
+									  ,[8/25/2022]
+									  ,[9/5/2022]
+									  ,[9/19/2022]
+									)
+								) as unpvt
+						)a
+
+	) C
+		ON C.Current_id = P.Pre_id 
+		and P.Hostname = c.Hostname
