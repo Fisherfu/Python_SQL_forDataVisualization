@@ -39,7 +39,7 @@ FROM
 									  ,[8/25/2022]
 									  ,[9/5/2022]
 									  ,[9/19/2022]
-									from [TSMC_Machine_Util].[dbo].[History_ChamberV5]) p
+									from [dbo].[History]) p
 								UNPIVOT
 								([Chamber] For [Date] IN ( 
 								      
@@ -70,7 +70,7 @@ RIGHT OUTER JOIN
 									  ,[8/25/2022]
 									  ,[9/5/2022]
 									  ,[9/19/2022]
-									from [TSMC_Machine_Util].[dbo].[History_ChamberV5]) p
+									from [dbo].[History]) p
 								UNPIVOT
 								([Chamber] For [Date] IN ( 
 									  
