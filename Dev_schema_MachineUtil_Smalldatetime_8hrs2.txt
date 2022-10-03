@@ -1,0 +1,72 @@
+
+
+
+
+  CREATE view [dbo].[Dev_schema_MachineUtil_Smalldatetime_8hrs]
+  as
+
+---220905
+
+
+
+    
+Select
+       [HostName],
+	  [MemoryPect],
+	  [global_datetime],
+	 
+		 case
+		 when DATEPART(hh,global_datetime)>=0 and DATEPART(hh,global_datetime) <8 then  cast(left(convert(varchar(10), global_datetime, 120), 10) + ' ' + '00:00:00' as datetime)  
+		 when DATEPART(hh,global_datetime)>=8 and DATEPART(hh,global_datetime) <16 then  cast(left(convert(varchar(10), global_datetime, 120), 10) + ' ' + '08:00:00' as datetime) 
+		 when DATEPART(hh,global_datetime)>=16 and DATEPART(hh,global_datetime) <24 then  cast(left(convert(varchar(10), global_datetime, 120), 10) + ' ' + '16:00:00' as datetime) 
+		 End as hours_time,
+		 DATEPART(year,global_datetime) as YR,
+		 DATEPART(week,global_datetime) as WK,
+		 convert(varchar(4), DATEPART(year,global_datetime)) +'-' + 'WK' + convert(varchar(2), DATEPART(week,global_datetime)) as WK_time,
+		 DATEPART(week, getdate())-DATEPART(week,global_datetime) as Wk_in4,
+
+
+	  [global_date],
+	  --[Util_ID],
+      [TimeStr],
+	  [TimeGroupStr],
+      [CPUPect],
+      [DiskPect],
+      --[Load1m],
+      [Load5m],
+      --[CPUPectTotal],
+      --[CPUPectUser],
+      [CPUSystem],
+      [CPUIOWait],
+      [CPUCnt],
+	  'Avg. 8hr.' as table_ind
+
+  FROM ( 
+		select 
+		    cast(left(timeStr, 10) + ' ' + right(timeStr, 5) as smalldatetime) global_datetime, 
+			cast(left(timeStr, 10) + ' ' + right(timeStr, 5) as date) global_date, 
+			 * 
+			from 
+			--[TSMC_Machine_Util].[dbo].[MachineUtilStatistics]
+   --         where [TimeStr] >'2022-08-01'
+          
+		  (
+		 
+				select *
+				from MachineUtilStatistics t0
+				where
+				exists (
+					select Util_ID from (
+						
+						select HostName, TimeStr, max(Util_ID) Max_Util_ID from MachineUtilStatistics
+						where TimeStr>='2022-08-01'
+						group by HostName, TimeStr
+
+					) t1
+					where t0.Util_ID=t1.Max_Util_ID
+				)
+
+		   )b
+
+
+		)a
