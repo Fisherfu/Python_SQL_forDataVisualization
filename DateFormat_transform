@@ -2,10 +2,7 @@
 
 
 
-  CREATE view [dbo].[Dev_schema_MachineUtil_Smalldatetime_8hrs]
-  as
-
----220905
+## transform the date format into datetime, and gen the WK number
 
 
 
@@ -27,15 +24,11 @@ Select
 
 
 	  [global_date],
-	  --[Util_ID],
-      [TimeStr],
+          [TimeStr],
 	  [TimeGroupStr],
-      [CPUPect],
-      [DiskPect],
-      --[Load1m],
+          [CPUPect],
+          [DiskPect],
       [Load5m],
-      --[CPUPectTotal],
-      --[CPUPectUser],
       [CPUSystem],
       [CPUIOWait],
       [CPUCnt],
@@ -47,8 +40,6 @@ Select
 			cast(left(timeStr, 10) + ' ' + right(timeStr, 5) as date) global_date, 
 			 * 
 			from 
-			--[TSMC_Machine_Util].[dbo].[MachineUtilStatistics]
-   --         where [TimeStr] >'2022-08-01'
           
 		  (
 		 
