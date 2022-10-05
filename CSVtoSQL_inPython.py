@@ -10,18 +10,15 @@ import pandas as pd
 import pyodbc
 import numpy
 
-# os.chdir("C:/Users/fisherfu/OneDrive - Synopsys, Inc/Desktop/TSMC Machines ResourcesAA/Raw_data")
-#os.chdir("C:/Users/fisherfu/OneDrive - Synopsys, Inc/Desktop/TSMC Machines ResourcesAA/Raw_data/W39")
-os.chdir("C:/Users/fisherfu/Downloads")
 
+os.chdir("C:/Users/fisherfu/Downloads")
 
 
 # insert csv raw data
 # use pandas
 
-# df = pd.read_csv("Raw_chamber_historyV3_test.csv")
-#df = pd.read_csv("TSMC utilization report-0926.2022-Asset_server.csv")
-df = pd.read_csv("TSMC utilization report-1004.2022_Asset_Server.csv")
+
+df = pd.read_csv("Asset_Server.csv")
 # columns = df.head()
 
 # df.fillna(method='ffill', inplace=True)
@@ -31,6 +28,7 @@ df = pd.read_csv("TSMC utilization report-1004.2022_Asset_Server.csv")
 # df.replace([numpy.nan], df.none, inplace=True)
 
 ## 空值補''
+
 df.fillna('', inplace=True)
 
 # print(columns)
@@ -45,15 +43,16 @@ print(df.columns)
 # server = 'localhost\sqlexpress' # for a named instance
 # server = 'myserver,port' # to specify an alternate port
 
-server = 'AP34' 
-database = 'TSMC_Machine_Util' 
-username = 'PGP_admin' 
-password = 'c3P@ssword' 
+server = 
+database = 
+username =
+password =
 cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 cursor = cnxn.cursor()
 
 
 # drop present table
+
 cursor.execute('''
               DROP TABLE [dbo].[Assets_Server1]
               ''')
@@ -63,6 +62,7 @@ cursor.execute('''
 # =============================================================================
 # notice: the name of columns should follow the original one in SQL, Asset_Server2
 # =============================================================================
+
 cursor.execute('''
 		CREATE TABLE [dbo].[Assets_Server1](
                      	[CPU%] [nvarchar](255) NULL,
@@ -100,10 +100,9 @@ cursor.execute('''
                     ) ON [PRIMARY]
                 ''')          
             
-# cnxn.commit()
-# cursor.close()
 
 ####insert new data 
+
 for index, row in df.iterrows():
     # print(row['CPU%'],row['Mem%'],row['N-Load-5m'])
     # print(row[0],row[1],row[2])
@@ -128,21 +127,6 @@ cnxn.commit()
 cursor.close()
 
 
-
-
-#  cursor.execute("INSERT INTO History_all_test (Hostname_ch,rtn) values(?,?,?,?,?,?,?,?,?)",
-#   row.date_rtn, row.rtn)
-
-
-# =============================================================================
-# # # for index, row in df.iterrows():
-# # #     print(row.Hostname_ch, row.date_ch, row.chamber, row.Hostname_de, row.date_de, row.dedicate, row.Hostname_rtn, row.date_rtn, row.rtn)
-# # #         # print(row['8/25/2022'],row['9/5/2022'])    
-#     
-# # #     cursor.execute("INSERT INTO History_all_test (Hostname_ch,date_ch,chamber,Hostname_de,date_de,dedicate,Hostname_rtn,date_rtn,rtn) values(?,?,?,?,?,?,?,?,?)",
-# # #                    row.Hostname_ch, row.date_ch, row.chamber, row.Hostname_de, row.date_de, row.dedicate, row.Hostname_rtn, row.date_rtn, row.rtn)
-# 
-# =============================================================================
 
 
 
